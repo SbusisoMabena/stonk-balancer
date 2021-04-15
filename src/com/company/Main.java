@@ -35,24 +35,26 @@ public class Main {
 
             float totalValue = 0;
             System.out.println("Number of Holdings: " + portfolio.getNumberOfHoldings());
-            System.out.println("Total Invested:" + portfolio.getPurchaseValue());
+            System.out.println("Total Invested:" + roundAmount(portfolio.getPurchaseValue()));
             System.out.println("Total Value:" + totalValue);
             System.out.println("=========================================================");
             System.out.println("=========================================================");
 
             ETFBalancer balancer = new ETFBalancer(etfs);
-            etfs = balancer.balance(portfolio.getPurchaseValue(), 803.30);
+            etfs = balancer.balance(portfolio.getPurchaseValue(), 150.05);
 
             for (ETF etf : etfs) {
                 System.out.println(
-                        etf.getName() + "\n" +
+                        "---------------------------------------------------------\n" +
+                                etf.getName() + "\n" +
+                                "---------------------------------------------------------\n" +
                                 "Ideal Allocation: " + etf.getIdealAllocation() + "%" + "\n" +
                                 "Current Allocation: " + etf.calculateCurrentAllocation(portfolio.getPurchaseValue()) + "%" + "\n" +
                                 "Purchased Value: R" + etf.getPurchaseValue() + "\n" +
                                 "Current Value: R" + etf.getCurrentValue() + "\n" +
-                                "Balanced value: R" + etf.calculateBalancedValue(portfolio.getPurchaseValue()) + "\n" +
+                                "Balanced value: R" + roundAmount(etf.calculateBalancedValue(portfolio.getPurchaseValue())) + "\n" +
                                 "Max Amount To Allocate: R" + Math.round(etf.getAmountToAllocate() * 100.0) / 100.0 + "\n" +
-                                "Amount To Allocate To Be Even: R" + Math.round((etf.calculateBalancedValue(portfolio.getPurchaseValue()- etf.getPurchaseValue()))*100.0 )/100.0 + "\n" +
+                                "Amount To Allocate To Be Even: R" + Math.round((etf.calculateBalancedValue(portfolio.getPurchaseValue() - etf.getPurchaseValue())) * 100.0) / 100.0 + "\n" +
                                 "Date Updated: " + etf.getDate() + "\n\n");
                 System.out.println("=========================================================");
             }
@@ -67,6 +69,10 @@ public class Main {
 
     public static void view(int row) {
 
+    }
+
+    private static double roundAmount(double amount){
+        return Math.round(amount * 100.0) / 100.0;
     }
 
     public static void saveRecord(String path) {
