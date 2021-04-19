@@ -102,6 +102,8 @@ public class Main {
             );
         }
 
+        System.out.println("% Allocated: " + portfolio.getIdealAllocationPercent());
+        System.out.println("---------------------------------------------------------");
         String table = formatAsTable(rows);
         System.out.println(table);
     }
