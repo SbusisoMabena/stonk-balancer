@@ -5,8 +5,7 @@ import com.company.Models.EtfPortfolio;
 import com.company.Services.ETFBalancer;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -57,7 +56,7 @@ public class Main {
                 "0, Exit.";
         System.out.println(prompt);
 
-        int action = scanner.nextInt();
+        int action = Integer.parseInt(scanner.nextLine());
 
         switch (action) {
             case 0 -> System.exit(0);
@@ -67,7 +66,7 @@ public class Main {
             }
             case 2 -> {
                 System.out.println("Please enter the available amount");
-                double availableAmount = scanner.nextDouble();
+                double availableAmount = Double.parseDouble(scanner.nextLine());
                 ArrayList<ETF> balancedEtfs = balancePortfolio(etfs, portfolio, availableAmount);
                 printBalancedEtfAllocations(balancedEtfs, portfolio);
                 showMenu(scanner, etfs, portfolio);
@@ -85,20 +84,26 @@ public class Main {
     }
 
     private static void printBalancedEtfAllocations(ArrayList<ETF> etfs, EtfPortfolio portfolio) {
+        List<List<String>> rows = new ArrayList<>();
+        List<String> headerRow = Arrays.asList("Name", "Ideal Allocation", "Current Allocation",
+                "Purchased Value", "Current Value", "Balanced Value", "Max Amount to allocate", "Amount to be even");
+        rows.add(headerRow);
         for (ETF etf : etfs) {
-            System.out.println(
-                    "---------------------------------------------------------\n" +
-                            etf.getName() + "\n" +
-                            "---------------------------------------------------------\n" +
-                            "Ideal Allocation: " + etf.getIdealAllocation() + "%" + "\n" +
-                            "Current Allocation: " + etf.calculateCurrentAllocation(portfolio.getPurchaseValue()) + "%" + "\n" +
-                            "Purchased Value: R" + etf.getPurchaseValue() + "\n" +
-                            "Current Value: R" + etf.getCurrentValue() + "\n" +
-                            "Balanced value: R" + roundAmount(etf.calculateBalancedValue(portfolio.getPurchaseValue())) + "\n" +
-                            "Max Amount To Allocate: R" + Math.round(etf.getAmountToAllocate() * 100.0) / 100.0 + "\n" +
-                            "Amount To Allocate To Be Even: R" + Math.round((etf.calculateBalancedValue(portfolio.getPurchaseValue() - etf.getPurchaseValue())) * 100.0) / 100.0 + "\n" +
-                            "Date Updated: " + etf.getDate() + "\n\n");
+            rows.add(Arrays.asList(
+                    etf.getName(),
+                    Double.toString(etf.getIdealAllocation()) + "%",
+                    Double.toString(etf.calculateCurrentAllocation(portfolio.getPurchaseValue())) + "%",
+                    "R"+etf.getPurchaseValue(),
+                    "R"+etf.getCurrentValue(),
+                    "R"+roundAmount(etf.calculateBalancedValue(portfolio.getPurchaseValue())),
+                    "R"+roundAmount(etf.getAmountToAllocate()),
+                   "R"+roundAmount((etf.calculateBalancedValue(portfolio.getPurchaseValue() - etf.getPurchaseValue())))
+            )
+            );
         }
+
+        String table = formatAsTable(rows);
+        System.out.println(table);
     }
 
     private static void printHoldings(ArrayList<ETF> etfs, EtfPortfolio portfolio) {
@@ -148,29 +153,24 @@ public class Main {
         }
     }
 
-//    private static String formatAsTable(List<List<String>> rows)
-//    {
-//        int[] maxLengths = new int[rows.get(0).size()];
-//        for (List<String> row : rows)
-//        {
-//            for (int i = 0; i < row.size(); i++)
-//            {
-//                maxLengths[i] = Math.max(maxLengths[i], row.get(i).length());
-//            }
-//        }
-//
-//        StringBuilder formatBuilder = new StringBuilder();
-//        for (int maxLength : maxLengths)
-//        {
-//            formatBuilder.append("%-").append(maxLength + 2).append("s");
-//        }
-//        String format = formatBuilder.toString();
-//
-//        StringBuilder result = new StringBuilder();
-//        for (List<String> row : rows)
-//        {
-//            result.append(String.format(format, row.toArray(new String[0]))).append("\n");
-//        }
-//        return result.toString();
-//    }
+    private static String formatAsTable(List<List<String>> rows) {
+        int[] maxLengths = new int[rows.get(0).size()];
+        for (List<String> row : rows) {
+            for (int i = 0; i < row.size(); i++) {
+                maxLengths[i] = Math.max(maxLengths[i], row.get(i).length());
+            }
+        }
+
+        StringBuilder formatBuilder = new StringBuilder();
+        for (int maxLength : maxLengths) {
+            formatBuilder.append("%-").append(maxLength + 2).append("s");
+        }
+        String format = formatBuilder.toString();
+
+        StringBuilder result = new StringBuilder();
+        for (List<String> row : rows) {
+            result.append(String.format(format, row.toArray(new String[0]))).append("\n");
+        }
+        return result.toString();
+    }
 }
