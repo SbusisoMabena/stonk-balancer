@@ -14,23 +14,31 @@ public class Main {
 
         System.out.println("Enter the path of the portfolio CSV: ");
 
-        String path = scanner.nextLine();
-        String line = "";
+        String allocationFile = scanner.nextLine();
+
+        System.out.println("Enter the path of the EE Export CSV: ");
+
+        String eeExportFile = scanner.nextLine();
+
+        String allocationLine = "";
+        String exportLine = "";
         int lineNumber = 0;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(path));
+            BufferedReader alocationFileBr = new BufferedReader(new FileReader(allocationFile));
+            BufferedReader eeExportFileBr = new BufferedReader(new FileReader(eeExportFile));
             final ArrayList<ETF> etfs = new java.util.ArrayList<>();
 
 
-            while ((line = br.readLine()) != null) {
+            while ((allocationLine = alocationFileBr.readLine()) != null && (exportLine = eeExportFileBr.readLine()) != null) {
                 if (lineNumber == 0) {
                     lineNumber++;
                     continue;
                 }
-                String[] values = line.split(",");
+                String[] allocationValues = allocationLine.split(",");
+                String[] exportValues = exportLine.split(",");
 
-                ETF etf = new ETF(values);
+                ETF etf = new ETF(allocationValues, exportValues);
                 etfs.add(etf);
                 lineNumber++;
             }
