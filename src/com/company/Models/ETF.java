@@ -22,8 +22,17 @@ public class ETF {
         try {
             this.name = values[0] != null ? values[0] : "";
             this.idealAllocation = !values[1].equals("") ? Double.parseDouble(values[1]) : 0;
-            this.purchaseValue = !values[3].equals("") ? Double.parseDouble(values[3]) : 0;
-            this.date = !values[6].equals("") ? values[6] : "";
+        } catch (IndexOutOfBoundsException E) {
+//pass
+        }
+    }
+
+    public ETF(String[] allocationValues, String[] exportValues) {
+        try {
+            this.name = allocationValues[0] != null ? allocationValues[0] : "";
+            this.idealAllocation = !allocationValues[1].equals("") ? Double.parseDouble(allocationValues[1]) : 0;
+            this.purchaseValue = Double.parseDouble(exportValues[2]);
+            this.currentValue = Double.parseDouble(exportValues[3]);
         } catch (IndexOutOfBoundsException E) {
 //pass
         }
